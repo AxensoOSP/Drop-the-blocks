@@ -11,15 +11,21 @@
 </head>
 
 <body>
-    <div class="drag-drop" id="first">First</div>
-    <div class="drag-drop" id="second">Second</div>
-    <div class="drag-drop" id="third">Third</div>
+    <button onclick="start_game()">Start</button>
 
-    <div id="first" class="dropzone">#first</div>
-    <div id="second" class="dropzone">#second</div>
-    <div id="third" class="dropzone">#third</div>
+    <div class="game">
 
-    <p id="game">Game state</p>
+        <div class="drag-drop" id="first">First</div>
+        <div class="drag-drop" id="second">Second</div>
+        <div class="drag-drop" id="third">Third</div>
+
+        <div id="first" class="dropzone">#first</div>
+        <div id="second" class="dropzone">#second</div>
+        <div id="third" class="dropzone">#third</div>
+
+    </div>
+
+    <p class="result"></p>
 
     <script src="main.js"></script>
 </body>

@@ -1,3 +1,7 @@
+.game:not(.is-on) {
+    display: none;
+}
+
 .dropzone {
     background-color: #ccc;
     border: dashed 4px transparent;
