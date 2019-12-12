@@ -1,0 +1,1 @@
+Lancia i cubi e vedi l'esito, le regole sono fissate nell'html con gli id dei blocchi e gli id delle zone.
