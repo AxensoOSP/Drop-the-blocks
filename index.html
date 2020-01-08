@@ -6,26 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="interact.min.js"></script>
     <title>Blocks</title>
 </head>
 
-<body>
-    <button onclick="start_game()">Start</button>
+<body class="container py-3">
+    <button type="button" class="btn btn-light" onclick="start_game()">Start</button>
 
-    <div class="game">
+    <div class="game mt-3">
 
-        <div class="drag-drop" id="first">First</div>
-        <div class="drag-drop" id="second">Second</div>
-        <div class="drag-drop" id="third">Third</div>
+        <p>Countdown: <span id="countdown"></span></p>
 
-        <div id="first" class="dropzone">#first</div>
-        <div id="second" class="dropzone">#second</div>
-        <div id="third" class="dropzone">#third</div>
+        <div class="bg-light text-secondary p-2 drag-drop" id="first">First</div>
+        <div class="bg-light text-secondary p-2 drag-drop" id="second">Second</div>
+        <div class="bg-light text-secondary p-2 drag-drop" id="third">Third</div>
+
+        <div id="first" class="bg-primary container dropzone">#first</div>
+        <div id="second" class="bg-danger container dropzone">#second</div>
+        <div id="third" class="bg-warning container dropzone">#third</div>
 
     </div>
 
-    <p class="result"></p>
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" onclick="start_game()">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="main.js"></script>
 </body>

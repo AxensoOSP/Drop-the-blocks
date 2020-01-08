@@ -1,12 +1,11 @@
 function start_game() {
-    console.log("The game is on")
+    document.querySelector(".modal").style.display = "none"
     document.querySelector(".game").classList.add("is-on")
-    setInterval(() => {
-        end_game();
-    }, 1000 * 20);
+    reset_shapes()
+    start_countdown()
 
     // Bit mask for the dropped elements
-    var scoreboard = {};
+    var scoreboard = {}
     document.querySelectorAll(".drag-drop").forEach(x => scoreboard[x.id] = {
         dropped: false,
         right: false
@@ -87,20 +86,26 @@ function start_game() {
 
         points = Object.values(scoreboard)
         if (points.every(k => k.right)) {
-            check_scoreboard.win = true;
+            check_scoreboard.win = true
 
             /*******
              * L'utente ha vinto, fai il trigger della modal
              ********/
+
+            document.querySelector(".modal-title").innerText = "Win"
+            document.querySelector(".modal").style.display = "block"
 
             end_game()
 
         } else if (points.every(k => k.dropped)) {
 
             /*******
-             * L'utente ha piazzato tutti i blocchi ma
-             * non tutti nel punto giusto
+             * L'utente ha piazzato tutti i blocchi ma non tutti nel punto giusto
              ********/
+
+            document.querySelector(".modal-title").innerText = "Try again"
+
+            end_game()
 
         } else {
             console.log("Still trying")
@@ -112,9 +117,36 @@ function start_game() {
         }
     }
 
-    function end_game() {
-        document.querySelector(".game").classList.remove("is-on")
-        document.querySelector(".result").innerText = check_scoreboard.win ? "Win" : "Loss"
+    var timer, countdown
+
+    function reset_shapes() {
+        interact('.drag-drop').unset()
+        document.querySelectorAll(".drag-drop").forEach(e => {
+            e.removeAttribute("style")
+            e.removeAttribute("data-y")
+            e.removeAttribute("data-x")
+        })
     }
 
+    function start_countdown() {
+        var duration = 20,
+            count = document.querySelector("#countdown")
+        count.innerHTML = duration
+        countdown = setInterval(() => count.innerHTML = --duration, 1000)
+        timer = setTimeout(() => {
+
+            /*******
+             * Il tempo è finito
+             ********/
+
+            document.querySelector(".modal-title").innerText = "Time's up"
+            end_game()
+        }, 1000 * duration)
+    }
+
+    function end_game() {
+        clearInterval(countdown)
+        clearTimeout(timer)
+        document.querySelector(".modal").style.display = "block"
+    }
 }
