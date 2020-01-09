@@ -1,4 +1,9 @@
-var scoreboard = {},
+const time = 50
+
+var duration = time,
+    scoreboard = {},
+    zones = document.querySelectorAll('.dropzone'),
+    elements = document.querySelectorAll('.drag-drop'),
     timer, countdown
 
 function dragMoveListener(event) {
@@ -8,11 +13,20 @@ function dragMoveListener(event) {
     var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
 
     // translate the element
-    target.style.webkitTransform = target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+    target.style.left = x + "px"
+    target.style.top = y + "px"
 
     // update the posiion attributes
     target.setAttribute('data-x', x)
     target.setAttribute('data-y', y)
+}
+
+function snap_in_place(element, zone) {
+    element.style.left = zone.style.left
+    element.style.top = zone.style.top
+
+    element.setAttribute('data-x', zone.style.left)
+    element.setAttribute('data-y', zone.style.top)
 }
 
 function check_scoreboard() {
@@ -38,7 +52,6 @@ function check_scoreboard() {
         end_game()
 
     } else {
-        console.log("Still trying")
 
         /*******
          * L'utente non ha ancora piazzato tutti i blocchi
@@ -47,8 +60,7 @@ function check_scoreboard() {
     }
 }
 
-function reset_shapes(scoreboard) {
-    interact('.drag-drop').unset()
+function reset_shapes() {
     document.querySelectorAll(".drag-drop").forEach(e => {
         e.removeAttribute("style")
         e.removeAttribute("data-y")
@@ -62,36 +74,51 @@ function reset_shapes(scoreboard) {
 }
 
 function start_countdown() {
-    var duration = 20,
-        count = document.querySelector("#countdown")
-    count.innerHTML = duration
-    countdown = setInterval(() => count.innerHTML = --duration, 1000)
+    duration = time
+    var count = document.querySelector("#countdown")
+    count.innerText = duration
+    countdown = setInterval(() => count.innerText = --duration, 1000)
     timer = setTimeout(() => {
 
         /*******
          * Il tempo è finito
          ********/
 
-        document.querySelector(".modal-title").innerText = "Time's up"
+        document.querySelector(".modal-title").innerText = "Try Again"
+        count.innerText = 0
+        clearInterval(countdown)
+
         end_game()
+
     }, 1000 * duration)
 }
 
 function end_game() {
     clearInterval(countdown)
     clearTimeout(timer)
+    document.querySelector("#start").innerHTML = "Start"
     document.querySelector(".modal").style.display = "block"
 }
 
 function start_game() {
+    interact('.drag-drop').unset()
+    clearInterval(countdown)
+    clearTimeout(timer)
+
+    document.querySelector("#start").innerHTML = "Restart"
     scoreboard = {}
 
-    reset_shapes(scoreboard)
-    start_countdown(timer, countdown)
+    reset_shapes()
+    start_countdown()
 
     document.querySelector(".modal").style.display = "none"
     document.querySelector(".game").classList.add("is-on")
 
+    zones.forEach(e => {
+        e.style.top = e.getBoundingClientRect().top + "px"
+        e.style.left = e.getBoundingClientRect().left + "px"
+    })
+    zones.forEach(e => e.style.position = "absolute")
 
     // enable draggables to be dropped into this
     interact('.dropzone').dropzone({
@@ -126,6 +153,7 @@ function start_game() {
             scoreboard[event.relatedTarget.id].dropped = true
             if (event.relatedTarget.id == event.target.id)
                 scoreboard[event.relatedTarget.id].right = true;
+            snap_in_place(event.relatedTarget, event.target)
             check_scoreboard() // event.relatedTarget.id)
         },
         ondropdeactivate: function (event) {
@@ -135,15 +163,21 @@ function start_game() {
         }
     })
 
+    elements.forEach(e => {
+        var x = e.getBoundingClientRect().left + "px"
+        var y = e.getBoundingClientRect().top + "px"
+
+        e.style.left = x
+        e.style.top = y
+
+        e.setAttribute('data-x', x)
+        e.setAttribute('data-y', y)
+    })
+    elements.forEach(e => e.style.position = "absolute")
+
     interact('.drag-drop').draggable({
         inertia: true,
-        modifiers: [
-            interact.modifiers.restrictRect({
-                restriction: 'parent',
-                endOnly: true
-            })
-        ],
         autoScroll: true,
-        onmove: dragMoveListener
+        onmove: dragMoveListener,
     })
 }

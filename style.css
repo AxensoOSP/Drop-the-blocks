@@ -1,36 +1,61 @@
+.game {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
 .game:not(.is-on) {
     display: none;
 }
 
+.clearflex {
+    flex: 0 0 100%;
+}
+
 .dropzone {
-    background-color: #ccc;
+    /* background-color: #ccc;
     border: dashed 4px transparent;
     border-radius: 4px;
     margin: 10px auto 30px;
     padding: 10px;
     width: 80%;
     height: 200px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s; */
+    height: 20vw;
+    width: 20vw;
+    border-radius: 100%;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    align-items: flex-end;
+}
+
+.dropzone img {
+    width: 100%;
+    height: auto;
 }
 
 .drop-active {
-    border-color: #aaa;
+    background-color: #333333 !important;
 }
 
 .drop-target {
-    background-color: #29e;
-    border-color: #fff;
-    border-style: solid;
+    background-color: #17a2b8 !important;
+
 }
 
 .drag-drop {
-    display: inline-block;
-    height: 100px;
-    width: 100px;
+    height: 20vw;
+    width: 20vw;
+
+    border-radius: 100%;
 
     touch-action: none;
     -webkit-transform: translate(0px, 0px);
     transform: translate(0px, 0px);
+
+    z-index: 2;
 
     transition: background-color 0.3s;
 }
