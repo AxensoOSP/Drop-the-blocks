@@ -1,4 +1,4 @@
-const time = 50
+const time = 5
 
 var duration = time,
     scoreboard = {},
@@ -37,9 +37,7 @@ function check_scoreboard() {
          * L'utente ha vinto, fai il trigger della modal
          ********/
 
-        document.querySelector(".modal-title").innerText = "Win"
-
-        end_game()
+        end_game("Win")
 
     } else if (points.every(k => k.dropped)) {
 
@@ -47,9 +45,7 @@ function check_scoreboard() {
          * L'utente ha piazzato tutti i blocchi ma non tutti nel punto giusto
          ********/
 
-        document.querySelector(".modal-title").innerText = "Try again"
-
-        end_game()
+        end_game("Try again")
 
     } else {
 
@@ -61,19 +57,24 @@ function check_scoreboard() {
 }
 
 function reset_shapes() {
+
     document.querySelectorAll(".drag-drop").forEach(e => {
         e.removeAttribute("style")
         e.removeAttribute("data-y")
         e.removeAttribute("data-x")
     })
 
-    document.querySelectorAll(".drag-drop").forEach(x => scoreboard[x.id] = {
+    scoreboard = {}
+    document.querySelectorAll(".drag-drop").forEach(x => scoreboard[x.getAttribute("zone")] = {
         dropped: false,
         right: false
     })
 }
 
-function start_countdown() {
+function reset_countdown() {
+    clearInterval(countdown)
+    clearTimeout(timer)
+
     duration = time
     var count = document.querySelector("#countdown")
     count.innerText = duration
@@ -88,12 +89,13 @@ function start_countdown() {
         count.innerText = 0
         clearInterval(countdown)
 
-        end_game()
+        end_game("Try again")
 
     }, 1000 * duration)
 }
 
-function end_game() {
+function end_game(outcome) {
+    document.querySelector(".modal-title").innerText = outcome
     clearInterval(countdown)
     clearTimeout(timer)
     document.querySelector("#start").innerHTML = "Start"
@@ -102,14 +104,11 @@ function end_game() {
 
 function start_game() {
     interact('.drag-drop').unset()
-    clearInterval(countdown)
-    clearTimeout(timer)
 
     document.querySelector("#start").innerHTML = "Restart"
-    scoreboard = {}
 
     reset_shapes()
-    start_countdown()
+    reset_countdown()
 
     document.querySelector(".modal").style.display = "none"
     document.querySelector(".game").classList.add("is-on")
@@ -147,14 +146,14 @@ function start_game() {
             event.target.classList.remove('drop-target')
             event.relatedTarget.classList.remove('can-drop')
             // event.relatedTarget.textContent = 'ondragleave'
-            scoreboard[event.relatedTarget.id].dropped = false
+            scoreboard[event.relatedTarget.getAttribute("zone")].dropped = false
         },
         ondrop: function (event) {
-            scoreboard[event.relatedTarget.id].dropped = true
-            if (event.relatedTarget.id == event.target.id)
-                scoreboard[event.relatedTarget.id].right = true;
+            scoreboard[event.relatedTarget.getAttribute("zone")].dropped = true
+            if (event.relatedTarget.getAttribute("zone") == event.target.getAttribute("zone"))
+                scoreboard[event.relatedTarget.getAttribute("zone")].right = true;
             snap_in_place(event.relatedTarget, event.target)
-            check_scoreboard() // event.relatedTarget.id)
+            check_scoreboard()
         },
         ondropdeactivate: function (event) {
             // remove active dropzone feedback
